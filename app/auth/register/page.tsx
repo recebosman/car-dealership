@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -16,6 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   name: z.string().nonempty({ message: "Please enter your name" }),
@@ -28,6 +32,7 @@ const formSchema = z.object({
 });
 
 export default function Register() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,13 +43,47 @@ export default function Register() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { email, password, name } = values;
     try {
       setLoading(true);
+      const response = await axios.post(
+        "/api/auth/register",
+        {
+          name: name,
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(response.data);
+        setLoading(false);
+
+        await signIn("credentials", {
+          redirect: false,
+          email: email,
+          password: password,
+        });
+
+        router.push("/dashboard");
+      }
+
+      if (response.status === 400) {
+        toast.error(response.data);
+        setLoading(false);
+      }
+
+      if (response.status === 500) {
+        toast.error(response.data);
+        setLoading(false);
+      }
     } catch (error) {
-      console.log(error);
-      setLoading(false);
-    } finally {
       setLoading(false);
     }
   }
@@ -66,7 +105,7 @@ export default function Register() {
           >
             <FormField
               control={form.control}
-              name="email"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -81,6 +120,7 @@ export default function Register() {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="email"
@@ -98,7 +138,6 @@ export default function Register() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -110,6 +149,7 @@ export default function Register() {
                       placeholder="Write your password"
                       {...field}
                       disabled={loading}
+                      type="password"
                     />
                   </FormControl>
                   <FormMessage />

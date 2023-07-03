@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -16,6 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -25,7 +29,9 @@ const formSchema = z.object({
 });
 
 export default function Home() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,14 +40,26 @@ export default function Home() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { email, password } = values;
     try {
-      setLoading(true);
+      await signIn("credentials", {
+        redirect: false,
+        email: email,
+        password: password,
+      })
+        .then((response) => {
+          if (response?.error) {
+            toast.error(response.error);
+          } else {
+            router.push("/dashboard");
+          }
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
     } catch (error) {
-      console.log(error);
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      console.log("Error:", error);
     }
   }
 
@@ -86,6 +104,7 @@ export default function Home() {
                       placeholder="Write your password"
                       {...field}
                       disabled={loading}
+                      type="password"
                     />
                   </FormControl>
                   <FormMessage />

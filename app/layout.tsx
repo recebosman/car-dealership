@@ -1,5 +1,7 @@
+import { NextAuthProvider } from "@/provider/AuthProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import ToasterProvider from "@/provider/ToastProvider";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <main>{children}</main>
+        <NextAuthProvider>
+          <main>{children}</main>
+          <ToasterProvider />
+        </NextAuthProvider>
       </body>
     </html>
   );

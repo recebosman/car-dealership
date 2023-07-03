@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  type      UserTypes @default(user)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  vehicles Vehicles[]
+}
+
+enum UserTypes {
+  user
+  admin
+}
+
+model Vehicles {
+  id            Int      @id @default(autoincrement())
+  name          String
+  model         String
+  vehicle_class String
+  year          Int
+  kilometers    Int
+  price         Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  UserId        Int
+  user          User     @relation(fields: [UserId], references: [id])
+
+  @@index([UserId], name: "UserId")
+}
