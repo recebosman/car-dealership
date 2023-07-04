@@ -1,8 +1,10 @@
 import { SheetSide } from "../sheet/SheetSide";
+import { Button } from "../ui/button";
 import AvatarNav from "./Avatar";
 
 import NavItems from "./NavItems";
 import NavLogo from "./NavLogo";
+import { NavNotification } from "./NavNotification";
 
 const Navbar = () => {
   return (
@@ -12,8 +14,11 @@ const Navbar = () => {
         <NavItems />
       </div>
       <div>
-        <SheetSide />
-        <AvatarNav />
+        <div className="flex items-center gap-x-2">
+          <NavNotification />
+          <SheetSide />
+          <AvatarNav />
+        </div>
       </div>
     </header>
   );
