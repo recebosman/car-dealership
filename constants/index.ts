@@ -1,5 +1,9 @@
 export const Nav_Links = [
   {
+    label: "Dashboard",
+    path: "/dashboard",
+  },
+  {
     label: "Settings",
     path: "/settings",
   },
@@ -14,5 +18,9 @@ export const Nav_Links = [
   {
     label: "Your Profile",
     path: "/profile",
+  },
+  {
+    label: "Settings",
+    path: "/settings",
   },
 ];

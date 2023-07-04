@@ -1,5 +1,6 @@
 import { SheetSide } from "../sheet/SheetSide";
-import { AvatarNav } from "./Avatar";
+import AvatarNav from "./Avatar";
+
 import NavItems from "./NavItems";
 import NavLogo from "./NavLogo";
 
