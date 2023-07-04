@@ -54,9 +54,9 @@ export default function Home() {
             toast.error(response.error);
             setLoading(false);
           } else {
-            setLoading(false);
             toast.success("Logged in successfully");
             router.push("/dashboard");
+            setLoading(false);
           }
         })
         .catch((error) => {

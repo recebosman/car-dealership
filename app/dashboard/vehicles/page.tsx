@@ -1,3 +1,4 @@
+import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import { Button } from "@/components/ui/button";
 import { ComboboxDemo } from "@/components/ui/comboBox";
 import { Input } from "@/components/ui/input";
@@ -25,9 +26,7 @@ const page = () => {
               </div>
             </div>
             <div className="space-x-4 flex">
-              <Button variant="outline" size="icon">
-                <Plus />
-              </Button>
+              <AddVehicleModal />
               <Button
                 className="bg-[#A162F7] hover:bg-purple-700 rounded-lg"
                 size="icon"

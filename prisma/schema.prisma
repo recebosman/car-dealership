@@ -25,18 +25,37 @@ enum UserTypes {
   admin
 }
 
+enum VehicleTypes {
+  new
+  used
+  scrap
+}
+
 model Vehicles {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   name          String
   model         String
   vehicle_class String
+  vehicle_type  VehicleTypes
   year          Int
   kilometers    Int
   price         Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   UserId        Int
-  user          User     @relation(fields: [UserId], references: [id])
+  user          User         @relation(fields: [UserId], references: [id])
+  Images        Images[]
 
   @@index([UserId], name: "UserId")
+}
+
+model Images {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  VehicleId Int
+  vehicle   Vehicles @relation(fields: [VehicleId], references: [id])
+
+  @@index([VehicleId], name: "VehicleId")
 }
