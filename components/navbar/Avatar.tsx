@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -11,8 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, TimerIcon, User } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const AvatarNav = () => {
+  const router = useRouter();
   const [time, setTime] = React.useState(new Date().toLocaleTimeString());
   const [day, setDay] = React.useState(new Date().toLocaleDateString());
 
@@ -27,6 +30,10 @@ const AvatarNav = () => {
     };
   }, []);
 
+  const handleLogout = () => {
+    signOut();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,7 +43,12 @@ const AvatarNav = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Receb Osman Karaaslan</DropdownMenuLabel>
+        <DropdownMenuLabel className="flex">
+          Receb Osman Karaaslan
+          <Badge className="ml-2" color="primary" variant={"default"}>
+            Admin
+          </Badge>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem className="flex gap-x-2">
           <span>
@@ -44,7 +56,10 @@ const AvatarNav = () => {
           </span>
           Profile
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className="flex gap-x-2">
+        <DropdownMenuCheckboxItem
+          onClick={handleLogout}
+          className="flex gap-x-2"
+        >
           <span>
             <LogOut size={16} />
           </span>

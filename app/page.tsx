@@ -43,6 +43,7 @@ export default function Home() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email, password } = values;
     try {
+      setLoading(true);
       await signIn("credentials", {
         redirect: false,
         email: email,
@@ -51,23 +52,31 @@ export default function Home() {
         .then((response) => {
           if (response?.error) {
             toast.error(response.error);
+            setLoading(false);
           } else {
+            setLoading(false);
+            toast.success("Logged in successfully");
             router.push("/dashboard");
           }
         })
         .catch((error) => {
           toast.error(error);
+          setLoading(false);
         });
     } catch (error) {
       console.log("Error:", error);
+      setLoading(false);
     }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-500">
       <div className="w-full max-w-md p-6 m-auto bg-white rounded-lg shadow-md ">
-        <div className="flex justify-center mx-auto">
+        <div className="flex justify-center mx-auto flex-col text-center">
           <h2 className="text-3xl font-semibold">Car Dealership</h2>
+          <p className="mt-2 text-sm font-semibold text-gray-700">
+            Welcome to the Car Dealership. Please sign in.
+          </p>
         </div>
 
         <Form {...form}>
