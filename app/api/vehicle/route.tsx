@@ -1,51 +1,34 @@
 import { NextResponse } from "next/server";
-import { useSession } from "next-auth/react";
 import prisma from "@/lib/prisma";
+import { User, Vehicles } from "@prisma/client";
 
-export async function POST(req: Request, res: Response) {
-  const { data: userInfo } = useSession();
-
-  if (!userInfo) {
-    return NextResponse.json("You need to be authenticated", {
-      status: 401,
-    });
-  }
-
-  const user_email = userInfo.user?.email;
-
+export async function POST(req: any, res: any) {
   const body = await req.json();
 
-  const { name, model, vehicle_class, year, kilometers, price } = body;
+  const {
+    name,
+    model,
+    vehicle_class,
+    vehicle_type,
+    year,
+    kilometers,
+    price,
+  }: Vehicles = body;
 
-  if (!name || !model || !vehicle_class || !year || !kilometers || !price) {
-    return NextResponse.json("You need to provide all fields", {
-      status: 400,
-    });
+  if (
+    !name ||
+    !model ||
+    !vehicle_class ||
+    !vehicle_type ||
+    !year ||
+    !kilometers ||
+    !price
+  ) {
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 400 }
+    );
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: user_email as string,
-    },
-  });
-
-  if (!user) {
-    return NextResponse.json("User not found", {
-      status: 404,
-    });
-  }
-
-  const vehicle = await prisma.vehicles.create({
-    data: {
-      name,
-      model,
-      vehicle_class,
-      year,
-      kilometers,
-      price,
-      UserId: user.id,
-    },
-  });
-
-  return NextResponse.json(vehicle);
+  return NextResponse.json(body);
 }

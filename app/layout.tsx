@@ -2,6 +2,7 @@ import { NextAuthProvider } from "@/provider/AuthProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import ToasterProvider from "@/provider/ToastProvider";
+import { SWRProvider } from "@/provider/SwrProvider";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <NextAuthProvider>
-          <main>{children}</main>
-          <ToasterProvider />
+          <SWRProvider>
+            <main>{children}</main>
+            <ToasterProvider />
+          </SWRProvider>
         </NextAuthProvider>
       </body>
     </html>

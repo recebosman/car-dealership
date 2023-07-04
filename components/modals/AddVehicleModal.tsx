@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +22,9 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { vehicles_model } from "@/constants";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const formSchema = z.object({
   name: z.string().nonempty({
@@ -38,18 +40,21 @@ const formSchema = z.object({
     message: "Vehicle type is required",
   }),
   year: z
-    .number()
-    .min(1886, {
-      message: "Year must be greater than 1886",
+    .string()
+    .min(4, {
+      message: "Year must be a 4-digit number",
     })
-    .max(2024, {
-      message: "Year must be less than 2024",
+    .max(4, {
+      message: "Year must be a 4-digit number",
+    })
+    .regex(/^\d+$/, {
+      message: "Year must be a positive number",
     }),
-  kilometers: z.number().nonnegative({
+  kilometers: z.string().regex(/^\d+$/, {
     message: "Kilometers must be a positive number",
   }),
-  price: z.number().nonnegative({
-    message: "Kilometers must be a positive number",
+  price: z.string().regex(/^\d+$/, {
+    message: "Price must be a positive number",
   }),
 });
 
@@ -61,14 +66,19 @@ const AddVehicleModal = () => {
       model: "",
       vehicle_class: "",
       vehicle_type: "",
-      year: 0,
-      kilometers: 0,
-      price: 0,
+      year: "",
+      kilometers: "",
+      price: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await axios.post("/api/vehicle", values);
+      toast.success("Vehicle added successfully");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -85,116 +95,34 @@ const AddVehicleModal = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className=" grid grid-cols-2 gap-4"
+                className="grid grid-cols-2 gap-4"
               >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Toyota" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="model"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Model</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Corolla" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="vehicle_class"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Vehicle Class</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Sedan" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="vehicle_type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Vehicle Type </FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. New or Used" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="
-                        e.g. Toyota"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="year"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Year</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. 2021" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="kilometers"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Kilometers</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. 10000" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel> Price </FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. $10000" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {vehicles_model.map((item) => (
+                  <FormField
+                    control={form.control}
+                    name={
+                      item.name as
+                        | "name"
+                        | "model"
+                        | "vehicle_class"
+                        | "vehicle_type"
+                        | "year"
+                        | "kilometers"
+                        | "price"
+                    }
+                    key={item.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{item.label}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={item.placeholder} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+
                 <div className="col-span-2 flex justify-end">
                   <Button type="submit" size={"full"}>
                     Add Vehicle

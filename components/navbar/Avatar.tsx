@@ -13,8 +13,10 @@ import {
 import { LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import GetCurrentUser from "@/action/GetCurrentUser";
 
 const AvatarNav = () => {
+  const { user } = GetCurrentUser();
   const router = useRouter();
   const [time, setTime] = React.useState(new Date().toLocaleTimeString());
   const [day, setDay] = React.useState(new Date().toLocaleDateString());
@@ -38,13 +40,16 @@ const AvatarNav = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="hidden md:flex">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarImage
+            src="https://github.com/shadcn.png"
+            alt={user?.session?.user?.name}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel className="flex">
-          Receb Osman Karaaslan
+          {user?.session?.user?.name}
           <Badge className="ml-2" color="primary" variant={"default"}>
             Admin
           </Badge>

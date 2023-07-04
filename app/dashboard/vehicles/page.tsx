@@ -1,3 +1,4 @@
+"use client";
 import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import { Button } from "@/components/ui/button";
 import { ComboboxDemo } from "@/components/ui/comboBox";
@@ -5,13 +6,13 @@ import { Input } from "@/components/ui/input";
 import VehicleCards from "@/components/vehicles/VehicleCards";
 import { vehicles_brand } from "@/constants";
 import { vehicles_type } from "@/constants";
-import { Grip, Plus, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 
-const page = () => {
+const Vehicles = () => {
   return (
     <div className="cntr">
       <>
-        <h1 className="text-3xl font-bold">Your Vehicles</h1>
+        <h1 className="text-3xl font-bold"></h1>
         <div className="mt-4">
           <div className="flex justify-between items-center">
             <div></div>
@@ -47,4 +48,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Vehicles;
