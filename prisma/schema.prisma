@@ -8,6 +8,11 @@ datasource db {
   relationMode = "prisma"
 }
 
+enum UserTypes {
+  user
+  admin
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   name      String
@@ -17,12 +22,21 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  Store    Store[]
   vehicles Vehicles[]
 }
 
-enum UserTypes {
-  user
-  admin
+model Store {
+  id        Int      @id @default(autoincrement())
+  name      String
+  UserId    Int
+  user      User     @relation(fields: [UserId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicles Vehicles[]
+
+  @@index([UserId], name: "UserId")
 }
 
 enum VehicleTypes {
@@ -44,9 +58,12 @@ model Vehicles {
   updatedAt     DateTime     @updatedAt
   UserId        Int
   user          User         @relation(fields: [UserId], references: [id])
+  StoreId       Int
+  store         Store        @relation(fields: [StoreId], references: [id])
   Images        Images[]
 
   @@index([UserId], name: "UserId")
+  @@index([StoreId], name: "StoreId")
 }
 
 model Images {

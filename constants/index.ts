@@ -4,8 +4,12 @@ export const Nav_Links = [
     path: "/dashboard",
   },
   {
-    label: "Your Vehicles",
+    label: "Vehicles",
     path: "/dashboard/vehicles",
+  },
+  {
+    label: "Your Store",
+    path: "/dashboard/store",
   },
   {
     label: "Offers",

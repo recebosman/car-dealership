@@ -35,7 +35,12 @@ export function SheetSide() {
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <>
-            <Input id="search" value="Search" className="col-span-3" />
+            <Input
+              id="search"
+              className="col-span-3"
+              placeholder="Search"
+              autoFocus={false}
+            />
           </>
           <ul className="flex flex-col font-bold text-3xl space-y-4">
             {Nav_Links.map((link) => (

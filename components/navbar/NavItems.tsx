@@ -4,7 +4,7 @@ import Link from "next/link";
 const NavItems = () => {
   return (
     <nav className="hidden md:flex ml-4">
-      <ul className=" flex font-semibold space-x-2 text-lg tracking-normal">
+      <ul className="flex font-semibold space-x-2 text-base lg:text-lg tracking-normal">
         {Nav_Links.map((link) => (
           <li key={link.label}>
             <Link

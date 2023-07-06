@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useState } from "react";
 import TextWithIcon from "../ui/TextWithIcon";
 import { toast } from "react-hot-toast";
+import { Badge } from "../ui/badge";
 
 const VehicleCards = () => {
   const [showOtherPhotos, setShowOtherPhotos] = useState(false);
@@ -40,7 +41,12 @@ const VehicleCards = () => {
             onClick={handleLike}
           />
         </CardTitle>
-        <CardDescription>Coupe</CardDescription>
+        <CardDescription>
+          Coupe
+          <Badge variant={"green"} className="ml-2 ">
+            New
+          </Badge>
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Image
@@ -59,10 +65,7 @@ const VehicleCards = () => {
           <TextWithIcon Text="Manual" Icon={Car} />
         </div>
         <div>
-          <span
-            className="font-bold  text-2xl cursor-pointer
-          "
-          >
+          <span className="font-bold text-lg md:text-2xl lg:text-2xl cursor-pointer ml-2">
             $199.000
           </span>
         </div>
