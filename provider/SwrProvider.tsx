@@ -1,5 +1,5 @@
 "use client";
-import GetCurrentUser from "@/action/GetCurrentUser";
+import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import Spinner from "@/components/ui/spinner";
 import { SWRConfig } from "swr";
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const SWRProvider = ({ children }: Props) => {
-  const { isLoading, isError } = GetCurrentUser();
+  const { isLoading, isError, user } = GetCurrentUser();
 
   if (isLoading)
     return (
@@ -17,5 +17,6 @@ export const SWRProvider = ({ children }: Props) => {
       </div>
     );
   if (isError) return <div>{isError.message}</div>;
+
   return <SWRConfig>{children}</SWRConfig>;
 };

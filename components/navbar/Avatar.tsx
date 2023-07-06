@@ -13,7 +13,7 @@ import {
 import { LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import GetCurrentUser from "@/action/GetCurrentUser";
+import GetCurrentUser from "@/action/auth/GetCurrentUser";
 
 const AvatarNav = () => {
   const { user } = GetCurrentUser();
@@ -33,6 +33,7 @@ const AvatarNav = () => {
   }, []);
 
   const handleLogout = () => {
+    router.push("/auth/register");
     signOut();
   };
 

@@ -24,7 +24,7 @@ import { Store } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import GetCurrentUser from "@/action/GetCurrentUser";
+import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import { toast } from "react-hot-toast";
 
 const formSchema = z.object({
@@ -84,6 +84,7 @@ export function CreateStoreCard() {
           toast.success("Store created successfully!");
           setIsLoading(false);
           setIsCreating((prev) => !prev);
+          window.location.reload();
         })
         .catch((err) => {
           setIsLoading(false);
@@ -134,7 +135,7 @@ export function CreateStoreCard() {
                       </FormItem>
                     )}
                   />
-                  <div className="flex flex-col space-y-1.5">
+                  <div className="flex flex-col space-y-1.5 py-2">
                     {warnings.map((warning, index) => (
                       <div
                         key={index}

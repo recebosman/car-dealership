@@ -20,10 +20,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <NextAuthProvider>
-          <SWRProvider>
-            <main>{children}</main>
-            <ToasterProvider />
-          </SWRProvider>
+          <main>{children}</main>
+          <ToasterProvider />
         </NextAuthProvider>
       </body>
     </html>
