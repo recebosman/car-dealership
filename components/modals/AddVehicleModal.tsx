@@ -201,7 +201,7 @@ const AddVehicleModal = () => {
               ))}
             </div>
 
-            <div className="col-span-2 flex justify-end mt-2">
+            <div className="col-span-2 flex justify-end mt-4">
               <Button type="submit" size={"full"}>
                 Add Vehicle
               </Button>

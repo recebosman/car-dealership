@@ -134,4 +134,10 @@ export const vehicles_model: vehicles_model[] = [
     placeholder: "e.g. $10000",
     type: "number",
   },
+  {
+    name: "fuel_type",
+    label: "Fuel Type",
+    placeholder: "e.g. Petrol",
+    type: "text",
+  },
 ];
