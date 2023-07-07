@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import { login } from "@/components/form";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -54,9 +55,9 @@ export default function Home() {
             toast.error(response.error);
             setLoading(false);
           } else {
+            setLoading(false);
             toast.success("Logged in successfully");
             router.push("/dashboard");
-            setLoading(false);
           }
         })
         .catch((error) => {
@@ -70,7 +71,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-500">
+    <div className="min-h-screen flex items-center justify-center bg-slate-500 p-2">
       <div className="w-full max-w-md p-6 m-auto bg-white rounded-lg shadow-md ">
         <div className="flex justify-center mx-auto flex-col text-center">
           <h2 className="text-3xl font-semibold">Car Dealership</h2>
@@ -84,42 +85,29 @@ export default function Home() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="mt-6 space-y-4"
           >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Write your email"
-                      {...field}
-                      disabled={loading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Write your password"
-                      {...field}
-                      disabled={loading}
-                      type="password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {login.map((item, index) => {
+              return (
+                <FormField
+                  control={form.control}
+                  name={item.name as any}
+                  key={index}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{item.label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={item.placeholder}
+                          {...field}
+                          disabled={loading}
+                          type={item.type}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
 
             <div className="mt-6">
               <Button

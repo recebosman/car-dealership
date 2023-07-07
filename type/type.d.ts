@@ -14,3 +14,17 @@ type vehicles_model = {
   placeholder: string;
   type: string;
 };
+
+type login = {
+  name: string;
+  label: string;
+  placeholder: string;
+  type?: string;
+};
+
+type register = {
+  name: string;
+  label: string;
+  placeholder: string;
+  type?: string;
+};

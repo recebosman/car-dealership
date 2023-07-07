@@ -1,4 +1,3 @@
-"use client";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -20,38 +19,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import axios from "axios";
-import { toast } from "react-hot-toast";
 
 type StoreCardProps = {
   storeName: string;
   id: number;
+  handleDelete: (id: number) => void;
 };
 
-export function StoreCard({ storeName, id }: StoreCardProps) {
-  const handleDelete = async (id: number) => {
-    try {
-      const res = await axios
-        .delete("/api/store", {
-          params: {
-            id,
-          },
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then(() => window.location.reload())
-        .then(() => toast.success("Store deleted successfully."))
-        .catch(() =>
-          toast.error("Something went wrong. Please try again later.")
-        );
-
-      return res;
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
-
+export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
   return (
     <Card className="w-[350px] h-fit">
       <CardHeader>
@@ -70,11 +45,7 @@ export function StoreCard({ storeName, id }: StoreCardProps) {
                 <DropdownMenuItem>
                   <span>Change Name</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    handleDelete(id);
-                  }}
-                >
+                <DropdownMenuItem onClick={() => handleDelete(id)}>
                   <span>Delete Shop</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>

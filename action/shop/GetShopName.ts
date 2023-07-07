@@ -9,6 +9,7 @@ export default function GetShopName() {
     data = [],
     error,
     isLoading,
+    mutate,
   } = useSWR("/api/store?email=" + user_email, (url) =>
     fetch(url).then((res) => res.json())
   );
@@ -17,5 +18,6 @@ export default function GetShopName() {
     data,
     isError: error,
     isLoading,
+    mutate,
   };
 }

@@ -12,12 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
 
 const AvatarNav = () => {
   const { user } = GetCurrentUser();
-  const router = useRouter();
   const [time, setTime] = React.useState(new Date().toLocaleTimeString());
   const [day, setDay] = React.useState(new Date().toLocaleDateString());
 
@@ -33,7 +31,6 @@ const AvatarNav = () => {
   }, []);
 
   const handleLogout = () => {
-    router.push("/auth/register");
     signOut();
   };
 

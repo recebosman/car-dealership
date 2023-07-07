@@ -2,7 +2,6 @@ import { NextAuthProvider } from "@/provider/AuthProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import ToasterProvider from "@/provider/ToastProvider";
-import { SWRProvider } from "@/provider/SwrProvider";
 
 const font = Inter({ subsets: ["latin"] });
 
