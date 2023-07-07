@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { User, Vehicles } from "@prisma/client";
+import { Vehicles } from "@prisma/client";
 
-export async function POST(req: any, res: any) {
+export async function POST(req: Request, res: Response) {
+  if (!req || !req.json)
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 400 }
+    );
   const body = await req.json();
 
   const {
@@ -13,7 +18,9 @@ export async function POST(req: any, res: any) {
     year,
     kilometers,
     price,
-  }: Vehicles = body;
+    user_email,
+    store_id,
+  } = body;
 
   if (
     !name ||
@@ -22,6 +29,8 @@ export async function POST(req: any, res: any) {
     !vehicle_type ||
     !year ||
     !kilometers ||
+    !user_email ||
+    !store_id ||
     !price
   ) {
     return NextResponse.json(
@@ -30,5 +39,27 @@ export async function POST(req: any, res: any) {
     );
   }
 
-  return NextResponse.json(body);
+  const vehicle: Vehicles = await prisma.vehicles.create({
+    data: {
+      name,
+      model,
+      vehicle_class,
+      vehicle_type,
+      year,
+      kilometers,
+      price,
+      store: {
+        connect: {
+          id: store_id,
+        },
+      },
+      user: {
+        connect: {
+          email: user_email,
+        },
+      },
+    },
+  });
+
+  return NextResponse.json({ vehicle }, { status: 200 });
 }

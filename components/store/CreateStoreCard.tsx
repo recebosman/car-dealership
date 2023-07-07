@@ -104,7 +104,7 @@ export function CreateStoreCard() {
   };
 
   return (
-    <Card className="max-w-sm">
+    <Card className="max-w-md">
       <CardHeader>
         <CardTitle>Create Store</CardTitle>
         <CardDescription>

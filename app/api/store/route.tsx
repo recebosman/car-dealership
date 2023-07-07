@@ -94,44 +94,6 @@ export async function GET(req: Request) {
   return NextResponse.json({ store }, { status: 200 });
 }
 
-export async function PUT(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-
-  if (!id) {
-    return NextResponse.json(
-      { error: "All fields are required" },
-      { status: 400 }
-    );
-  }
-
-  const body = await req.json();
-  const { name } = body;
-
-  if (!name) {
-    return NextResponse.json(
-      { error: "All fields are required" },
-      { status: 400 }
-    );
-  }
-
-  const store = await prisma.store.update({
-    where: {
-      id: Number(id),
-    },
-    data: {
-      name,
-    },
-  });
-
-  return NextResponse.json(
-    {
-      message: "Store updated successfully",
-    },
-    { status: 200 }
-  );
-}
-
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");

@@ -28,3 +28,8 @@ type register = {
   placeholder: string;
   type?: string;
 };
+
+type store = {
+  id: number;
+  name: string;
+};

@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Store } from "lucide-react";
 
 type StoreCardProps = {
   storeName: string;
@@ -28,10 +28,12 @@ type StoreCardProps = {
 
 export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
   return (
-    <Card className="w-[350px] h-fit">
+    <Card className="max-w-md h-fit">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          {storeName}
+          <span className="flex items-center gap-2">
+            <Store /> {storeName}
+          </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size={"icon"} variant="ghost">
@@ -42,9 +44,6 @@ export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
               <DropdownMenuLabel>Settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <span>Change Name</span>
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleDelete(id)}>
                   <span>Delete Shop</span>
                 </DropdownMenuItem>

@@ -30,26 +30,29 @@ const Page = () => {
   return (
     <div className="cntr">
       <h1 className="text-3xl font-bold">Your Store</h1>
-      <div className="mt-4 flex gap-4 ">
+      <div className="flex flex-col mt-4">
         <CreateStoreCard />
-        <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center h-full">
-          {isLoading && (
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full place-content-start ">
+          {isLoading ? (
             <>
               {Array(3).map((_, i) => (
                 <Skeleton key={i} />
               ))}
             </>
-          )}
-          {isError && <p className="text-red-500">Something went wrong</p>}
-          {data &&
-            data?.store?.map((store: any) => (
+          ) : isError ? (
+            <p className="text-red-500">Something went wrong</p>
+          ) : (
+            data &&
+            data.store?.map((store: store) => (
               <StoreCard
                 key={store.id}
                 storeName={store.name}
                 id={store.id}
                 handleDelete={handleDelete}
               />
-            ))}
+            ))
+          )}
         </div>
       </div>
     </div>
