@@ -13,8 +13,10 @@ import {
 import { LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
+import { useRouter } from "next/navigation";
 
 const AvatarNav = () => {
+  const router = useRouter();
   const { user } = GetCurrentUser();
   const [time, setTime] = React.useState(new Date().toLocaleTimeString());
   const [day, setDay] = React.useState(new Date().toLocaleDateString());
@@ -32,6 +34,7 @@ const AvatarNav = () => {
 
   const handleLogout = () => {
     signOut();
+    router.push("/");
   };
 
   return (

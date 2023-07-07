@@ -21,7 +21,7 @@ type ComboboxProps = {
   data: {
     value: string;
     label: string;
-  }[]; // data: vehicles_type or vehicles_brand
+  }[];
   command: string;
 };
 
@@ -36,7 +36,7 @@ export function ComboboxDemo({ data, command }: ComboboxProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[225px] justify-between"
         >
           {value ? data.find((item) => item.value === value)?.label : command}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -46,8 +46,9 @@ export function ComboboxDemo({ data, command }: ComboboxProps) {
         <Command>
           <CommandInput placeholder={command} />
           <CommandEmpty>
-            No {command.split(" ")[1].toLowerCase()} found.
+            Nothing found for <strong>{command}</strong>
           </CommandEmpty>
+
           <CommandGroup>
             {data?.map((item) => (
               <CommandItem

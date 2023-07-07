@@ -28,7 +28,7 @@ type StoreCardProps = {
 
 export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
   return (
-    <Card className="max-w-md h-fit">
+    <Card className="max-w-sm h-fit">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">

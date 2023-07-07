@@ -31,6 +31,7 @@ import GetShopName from "@/action/shop/GetShopName";
 import clsx from "clsx";
 import { useState } from "react";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().nonempty({
@@ -65,6 +66,9 @@ const formSchema = z.object({
   price: z.string().regex(/^\d+$/, {
     message: "Price must be a positive number",
   }),
+  fuel_type: z.string().nonempty({
+    message: "Fuel type is required",
+  }),
 });
 
 const AddVehicleModal = () => {
@@ -82,16 +86,20 @@ const AddVehicleModal = () => {
       year: "",
       kilometers: "",
       price: "",
+      fuel_type: "",
     },
   });
 
   const handleSelectStore = (id: string) => {
     setSelectedStoreId(id);
-    console.log(id);
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      if (!selectedStoreId) {
+        toast.error("Please select a store first");
+        return;
+      }
       const response = await axios
         .post("/api/vehicle", {
           ...values,
@@ -106,6 +114,7 @@ const AddVehicleModal = () => {
           if (res.status === 200) {
             toast.success("Vehicle added successfully");
             mutate();
+            form.reset();
           }
         })
         .catch((err) => {
@@ -128,13 +137,17 @@ const AddVehicleModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
             <RadioGroup defaultValue="card" className="grid grid-cols-3 gap-4">
-              {data?.store?.length === 0 && (
-                <p className="col-span-3 text-center text-sm text-muted">
+              {data?.store?.length === 0 ? (
+                <p className="col-span-3 text-center text-sm font-semibold text-red-500">
                   You don&#39;t have any store yet. Please create a store first.
+                  <span>
+                    <Link href="/dashboard/store">
+                      <s className="text-primary"> Create a store</s>
+                    </Link>
+                  </span>
                 </p>
-              )}
-
-              {data &&
+              ) : (
+                data &&
                 data?.store?.map((store: store) => (
                   <Label
                     key={store.id}
@@ -155,9 +168,10 @@ const AddVehicleModal = () => {
                     <Store size={32} className="mb-2" />
                     <span className="text-sm font-bold">{store.name}</span>
                   </Label>
-                ))}
+                ))
+              )}
             </RadioGroup>
-            <div className="grid grid-cols-2 gap-4 space-y-1.5 mt-2">
+            <div className="grid grid-cols-2 gap-4 space-y-1.5">
               {vehicles_model.map((item) => (
                 <FormField
                   control={form.control}
@@ -170,6 +184,7 @@ const AddVehicleModal = () => {
                       | "year"
                       | "kilometers"
                       | "price"
+                      | "fuel_type"
                   }
                   key={item.name}
                   render={({ field }) => (
@@ -178,6 +193,7 @@ const AddVehicleModal = () => {
                       <FormControl>
                         <Input placeholder={item.placeholder} {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}

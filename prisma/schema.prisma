@@ -45,6 +45,13 @@ enum VehicleTypes {
   scrap
 }
 
+enum FuelTypes {
+  petrol
+  diesel
+  electric
+  hybrid
+}
+
 model Vehicles {
   id            Int          @id @default(autoincrement())
   name          String
@@ -54,6 +61,7 @@ model Vehicles {
   year          Int
   kilometers    Int
   price         Int
+  fuel_type     FuelTypes
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   UserId        Int
