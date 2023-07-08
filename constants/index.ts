@@ -141,3 +141,65 @@ export const vehicles_model: vehicles_model[] = [
     type: "text",
   },
 ];
+
+export const fuel_type: fuel_type[] = [
+  {
+    label: "Petrol",
+    value: "petrol",
+  },
+  {
+    label: "Diesel",
+    value: "diesel",
+  },
+  {
+    label: "Hybrid",
+    value: "hybrid",
+  },
+  {
+    label: "Electric",
+    value: "electric",
+  },
+];
+
+export const vehicle_class: vehicles_class[] = [
+  {
+    label: "Luxury",
+    value: "luxury",
+  },
+  {
+    label: "Sports",
+    value: "sports",
+  },
+  {
+    label: "Hybrid",
+    value: "hybrid",
+  },
+  {
+    label: "Sedan",
+    value: "sedan",
+  },
+  {
+    label: "Hatchback",
+    value: "hatchback",
+  },
+  {
+    label: "SUV",
+    value: "suv",
+  },
+  {
+    label: "MPV",
+    value: "mpv",
+  },
+  {
+    label: "Coupe",
+    value: "coupe",
+  },
+  {
+    label: "Van",
+    value: "van",
+  },
+  {
+    label: "Crossover",
+    value: "crossover",
+  },
+];

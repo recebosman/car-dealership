@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Store } from "lucide-react";
+import { Loader2, Store } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -166,7 +166,14 @@ export function CreateStoreCard() {
                     variant="default"
                     type="submit"
                   >
-                    Create
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                      </>
+                    ) : (
+                      "Create"
+                    )}
                   </Button>
                 </CardFooter>
               )}

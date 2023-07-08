@@ -48,37 +48,38 @@ export default function Register() {
     const { email, password, name } = values;
     try {
       setLoading(true);
-      const response = await axios.post(
-        "/api/auth/register",
-        {
-          name,
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+      const response = await axios
+        .post(
+          "/api/auth/register",
+          {
+            name,
+            email,
+            password,
           },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success(response.data);
-        setLoading(false);
-
-        await signIn("credentials", {
-          redirect: false,
-          email: email,
-          password: password,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success("Vehicle added successfully");
+            signIn("credentials", {
+              email,
+              password,
+            });
+            setLoading(false);
+            router.push("/dashboard");
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data.error);
+          setLoading(false);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-
-        router.push("/dashboard");
-      }
-
-      if (response.status === 400) {
-        toast.error(response.data.message);
-        setLoading(false);
-      }
     } catch (error) {
       setLoading(false);
     }

@@ -18,6 +18,7 @@ export async function POST(req: Request, res: Response) {
     year,
     kilometers,
     price,
+    fuel_type,
     user_email,
     store_id,
   } = body;
@@ -31,6 +32,7 @@ export async function POST(req: Request, res: Response) {
     !kilometers ||
     !user_email ||
     !store_id ||
+    !fuel_type ||
     !price
   ) {
     return NextResponse.json(
@@ -48,6 +50,7 @@ export async function POST(req: Request, res: Response) {
       year,
       kilometers,
       price,
+      fuel_type,
       store: {
         connect: {
           id: store_id,
