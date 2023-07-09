@@ -131,7 +131,7 @@ const AddVehicleModal = () => {
     }
   }
 
-  const hasStores = data?.store?.length > 0;
+  const hasStores = data?.store?.length === 0;
 
   return (
     <Dialog>
