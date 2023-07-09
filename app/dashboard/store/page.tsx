@@ -4,28 +4,45 @@ import { CreateStoreCard } from "@/components/store/CreateStoreCard";
 import { StoreCard } from "@/components/store/StoreCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 
 const Page = () => {
   const { data, isError, isLoading, mutate } = GetShopName();
 
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete("/api/store", {
-        params: {
-          id,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      toast.success("Store deleted successfully.");
-      mutate();
-    } catch (error) {
-      toast.error("Something went wrong. Please try again later.");
+  const handleDelete = useCallback(
+    async (id: number) => {
+      try {
+        await axios.delete("/api/store", {
+          params: {
+            id,
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        toast.success("Store deleted successfully.");
+        mutate();
+      } catch (error) {
+        toast.error("Something went wrong. Please try again later.");
+      }
+    },
+    [mutate]
+  );
+
+  const storeCards = useMemo(() => {
+    if (data && data.store) {
+      return data.store.map((store: store) => (
+        <StoreCard
+          key={store.id}
+          storeName={store.name}
+          id={store.id}
+          handleDelete={handleDelete}
+        />
+      ));
     }
-  };
+    return [];
+  }, [data, handleDelete]);
 
   return (
     <div className="cntr">

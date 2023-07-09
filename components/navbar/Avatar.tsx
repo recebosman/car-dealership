@@ -34,7 +34,6 @@ const AvatarNav = () => {
 
   const handleLogout = () => {
     signOut();
-    router.push("/");
   };
 
   return (

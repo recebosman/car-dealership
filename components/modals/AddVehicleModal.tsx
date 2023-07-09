@@ -1,4 +1,12 @@
 "use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import clsx from "clsx";
+import Link from "next/link";
+
 import {
   Dialog,
   DialogContent,
@@ -14,7 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import {
   Select,
   SelectContent,
@@ -22,29 +29,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
+import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input";
-
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Store } from "lucide-react";
-import { useForm } from "react-hook-form";
+
 import {
   fuel_type,
   vehicle_class,
   vehicles_model,
   vehicles_type,
 } from "@/constants";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import { Label } from "../ui/label";
+
 import GetShopName from "@/action/shop/GetShopName";
-import clsx from "clsx";
-import { useState } from "react";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
-import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().nonempty({
@@ -131,6 +131,8 @@ const AddVehicleModal = () => {
     }
   }
 
+  const hasStores = data?.store?.length > 0;
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -143,14 +145,15 @@ const AddVehicleModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
             <RadioGroup defaultValue="card" className="grid grid-cols-3 gap-4">
-              {data?.store?.length === 0 ? (
-                <p className="col-span-3 text-center text-sm font-semibold text-red-500">
+              {hasStores ? (
+                <p className="col-span-3 text-center text-sm font-semibold text-red-500 ">
                   You don&#39;t have any store yet. Please create a store first.
-                  <span>
-                    <Link href="/dashboard/store">
-                      <s className="text-primary"> Create a store</s>
-                    </Link>
-                  </span>
+                  <Link href="/dashboard/store">
+                    <Button variant={"link"} className="text-primary">
+                      {" "}
+                      Create a store
+                    </Button>
+                  </Link>
                 </p>
               ) : (
                 data &&
@@ -181,17 +184,7 @@ const AddVehicleModal = () => {
               {vehicles_model.map((item) => (
                 <FormField
                   control={form.control}
-                  name={
-                    item.name as
-                      | "name"
-                      | "model"
-                      | "vehicle_class"
-                      | "vehicle_type"
-                      | "year"
-                      | "kilometers"
-                      | "price"
-                      | "fuel_type"
-                  }
+                  name={item.name as any}
                   key={item.name}
                   render={({ field }) =>
                     item.name === "vehicle_type" ? (
