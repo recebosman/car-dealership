@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { FileUploader } from "react-drag-drop-files";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/firebase";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
@@ -45,8 +49,10 @@ import {
 
 import GetShopName from "@/action/shop/GetShopName";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
+import Image from "next/image";
+import { X } from "lucide-react";
 
-const formSchema = z.object({
+const vehicleFormSchema = z.object({
   name: z.string().nonempty({
     message: "Name is required",
   }),
@@ -81,29 +87,74 @@ const formSchema = z.object({
     }),
 });
 
+const fileTypes = ["JPG", "PNG"];
+
 const AddVehicleModal = () => {
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
+  const [selectedPhotos, setSelectedPhotos] = useState<any[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
   const [selectedStoreId, setSelectedStoreId] = useState("");
   const { data, mutate } = GetShopName();
   const { user } = GetCurrentUser();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof vehicleFormSchema>>({
+    resolver: zodResolver(vehicleFormSchema),
   });
 
-  const handleSelectStore = (id: string) => {
-    setSelectedStoreId(id);
+  const handleSelectStoreById = (storeId: string) => {
+    setSelectedStoreId(storeId);
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const handleFileSelection = (filesObject: string) => {
+    const files = Object.values(filesObject);
+    setFile(files.map((file) => file) as any);
+
+    if (selectedPhotos.length + files.length > 2) {
+      toast.error("You can only upload up to 2 photos");
+      return;
+    }
+
+    setSelectedPhotos((prevPhotos) => [...prevPhotos, ...files]);
+  };
+
+  const uploadImages = async (uploadedImages: any) => {
+    if (selectedPhotos.length === 0) return;
+
+    const uploadPromises = selectedPhotos.map((photo) => {
+      const imageRef = ref(
+        storage,
+        `images/${user.session.user.email}/${uuidv4()}`
+      );
+
+      return uploadBytes(imageRef, photo).then((snapshot) => {
+        return getDownloadURL(snapshot.ref);
+      });
+    });
+
     try {
+      const urls = await Promise.all(uploadPromises);
+      uploadedImages(urls);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setSelectedPhotos([]);
+  };
+
+  async function onSubmit(values: z.infer<typeof vehicleFormSchema>) {
+    try {
+      const formValues = form.getValues();
+
       const combinedValues = {
-        ...values,
+        ...formValues,
         year: parseInt(values.year),
         kilometers: parseInt(values.kilometers),
         price: parseInt(values.price),
         store_id: selectedStoreId,
         user_email: user.session.user.email,
+        images: [],
       };
 
       setLoading(true);
@@ -111,27 +162,39 @@ const AddVehicleModal = () => {
         toast.error("Please select a store first");
         return;
       }
-      const response = await axios
-        .post("/api/vehicle", {
-          ...combinedValues,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            toast.success("Vehicle added successfully");
-            mutate();
-            form.reset;
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response.data.error);
-        });
+
+      const uploadedImages = (images: any) => {
+        combinedValues.images = images;
+        axios
+          .post("/api/vehicle", {
+            ...combinedValues,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              toast.success("Vehicle added successfully");
+              mutate();
+              form.reset();
+              setLoading(false);
+            }
+          })
+          .catch((err) => {
+            toast.error(err.response.data.error);
+          });
+      };
+
+      await uploadImages(uploadedImages);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const hasStores = data?.store?.length > 0;
+  const handleRemove = (file: string) => {
+    setSelectedPhotos((prevPhotos) =>
+      prevPhotos.filter((photo) => photo !== file)
+    );
+  };
+
+  const hasStores = data?.store?.length === 0;
 
   return (
     <Dialog>
@@ -144,7 +207,10 @@ const AddVehicleModal = () => {
         <DialogTitle>Add a New Vehicle</DialogTitle>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
-            <RadioGroup defaultValue="card" className="grid grid-cols-3 gap-4">
+            <RadioGroup
+              defaultValue="card"
+              className="grid grid-cols-3 gap-4 pb-4"
+            >
               {hasStores ? (
                 <p className="col-span-3 text-center text-sm font-semibold text-red-500 ">
                   You don&#39;t have any store yet. Please create a store first.
@@ -161,9 +227,9 @@ const AddVehicleModal = () => {
                   <Label
                     key={store.id}
                     htmlFor="card"
-                    onClick={() => handleSelectStore(store.id as any)}
+                    onClick={() => handleSelectStoreById(store.id as any)}
                     className={clsx(
-                      "flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4",
+                      "flex flex-col items-center justify-between rounded-md border-2 border-slate-700 bg-popover p-4 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 ease-in-out",
                       (store.id as any) === selectedStoreId &&
                         "border-primary bg-primary text-primary-foreground",
                       "space-y-1.5 cursor-pointer"
@@ -265,6 +331,47 @@ const AddVehicleModal = () => {
                   }
                 />
               ))}
+            </div>
+            <div className="mt-4 space-y-4">
+              <FileUploader
+                handleChange={handleFileSelection}
+                selectedFiles={selectedPhotos}
+                handleDelete={handleRemove}
+                name="file"
+                types={fileTypes}
+                label="Upload Vehicle Image (Max 2)"
+                multiple
+                required
+                disabled={selectedPhotos.length >= 2}
+                className="col-span-2"
+              />
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                {selectedPhotos.length > 0 &&
+                  selectedPhotos.map((photo) => (
+                    <div
+                      key={photo.name}
+                      className="flex items-center justify-between relative"
+                    >
+                      <Image
+                        src={URL.createObjectURL(photo)}
+                        alt="Selected Vehicle Image"
+                        width={150}
+                        height={150}
+                        className="rounded-md"
+                      />
+                      <Button
+                        className="absolute top-0 right-0 hover:text-red-600 text-white
+                       bg-black bg-opacity-50 
+                      "
+                        type="button"
+                        variant="link"
+                        size="icon"
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                  ))}
+              </div>
             </div>
 
             <div className="col-span-2 flex justify-end mt-4">

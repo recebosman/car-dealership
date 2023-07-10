@@ -76,7 +76,7 @@ model Vehicles {
 
 model Images {
   id        Int      @id @default(autoincrement())
-  url       String
+  url       String   @db.Text()
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   VehicleId Int

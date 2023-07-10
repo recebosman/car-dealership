@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Vehicles } from "@prisma/client";
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   if (!req || !req.json)
     return NextResponse.json(
       { error: "Something went wrong" },
@@ -21,6 +21,7 @@ export async function POST(req: Request, res: Response) {
     fuel_type,
     user_email,
     store_id,
+    images = [],
   } = body;
 
   if (
@@ -33,6 +34,7 @@ export async function POST(req: Request, res: Response) {
     !user_email ||
     !store_id ||
     !fuel_type ||
+    !images ||
     !price
   ) {
     return NextResponse.json(
@@ -60,6 +62,11 @@ export async function POST(req: Request, res: Response) {
         connect: {
           email: user_email,
         },
+      },
+      Images: {
+        create: images.map((url: string) => ({
+          url,
+        })),
       },
     },
   });
