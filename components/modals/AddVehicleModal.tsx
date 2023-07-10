@@ -188,15 +188,13 @@ const AddVehicleModal = () => {
     }
   }
 
-<<<<<<< HEAD
   const handleRemove = (file: string) => {
     setSelectedPhotos((prevPhotos) =>
       prevPhotos.filter((photo) => photo !== file)
     );
   };
 
-=======
->>>>>>> b4b21c6d6047330ab34b28a770339b9f0ce4032e
+
   const hasStores = data?.store?.length === 0;
 
   return (
