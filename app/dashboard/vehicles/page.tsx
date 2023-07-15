@@ -4,6 +4,7 @@ import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import { Button } from "@/components/ui/button";
 import { ComboboxDemo } from "@/components/ui/comboBox";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import VehicleCards from "@/components/vehicles/VehicleCards";
 import { vehicles_brand } from "@/constants";
 import { vehicles_type } from "@/constants";
@@ -43,9 +44,18 @@ const Vehicles = () => {
       </>
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center gap-4 mt-8">
         {isLoading && (
-          <div className="flex justify-center items-center">
-            <p className="text-2xl">Loading...</p>
-          </div>
+          <>
+            {Array(3).map((_, i) => (
+              <div key={i} className="flex items-center space-x-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                  <Skeleton className="h-4 w-[150px]" />
+                </div>
+              </div>
+            ))}
+          </>
         )}
 
         {isError && (

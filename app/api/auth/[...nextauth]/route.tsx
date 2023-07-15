@@ -33,10 +33,26 @@ export const handler: AuthOptions = NextAuth({
           throw new Error("Invalid credentials");
         }
 
-        return { id: user.id.toString(), name: user.name, email: user.email };
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.type,
+        };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = user.role;
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session?.user) session.user.role = token.role;
+      return session;
+    },
+  },
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
