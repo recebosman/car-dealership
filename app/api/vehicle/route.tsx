@@ -73,3 +73,13 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ vehicle }, { status: 200 });
 }
+
+export async function GET(req: Request) {
+  const vehicles = await prisma.vehicles.findMany({
+    include: {
+      Images: true,
+    },
+  });
+
+  return NextResponse.json({ vehicles }, { status: 200 });
+}

@@ -93,7 +93,6 @@ const AddVehicleModal = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [selectedPhotos, setSelectedPhotos] = useState<any[]>([]);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const [selectedStoreId, setSelectedStoreId] = useState("");
   const { data, mutate } = GetShopName();
@@ -118,14 +117,15 @@ const AddVehicleModal = () => {
 
     setSelectedPhotos((prevPhotos) => [...prevPhotos, ...files]);
   };
-
   const uploadImages = async (uploadedImages: any) => {
     if (selectedPhotos.length === 0) return;
 
     const uploadPromises = selectedPhotos.map((photo) => {
       const imageRef = ref(
         storage,
-        `images/${user.session.user.email}/${uuidv4()}`
+        `images/${user.session.user.email}/${data.store
+          ?.find((store: any) => store.id === selectedStoreId)
+          ?.name.toLowerCase()}/${uuidv4()}`
       );
 
       return uploadBytes(imageRef, photo).then((snapshot) => {
@@ -136,6 +136,7 @@ const AddVehicleModal = () => {
     try {
       const urls = await Promise.all(uploadPromises);
       uploadedImages(urls);
+      window.location.reload(); // Sayfanın yenilenmesi
     } catch (error) {
       console.log(error);
     }
@@ -160,6 +161,7 @@ const AddVehicleModal = () => {
       setLoading(true);
       if (!selectedStoreId) {
         toast.error("Please select a store first");
+        setLoading(false);
         return;
       }
 

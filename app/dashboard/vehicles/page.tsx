@@ -1,4 +1,5 @@
 "use client";
+import GetVehicles from "@/action/cars/GetCars";
 import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import { Button } from "@/components/ui/button";
 import { ComboboxDemo } from "@/components/ui/comboBox";
@@ -9,6 +10,8 @@ import { vehicles_type } from "@/constants";
 import { SlidersHorizontal } from "lucide-react";
 
 const Vehicles = () => {
+  const { data, isError, isLoading } = GetVehicles();
+
   return (
     <div className="cntr">
       <>
@@ -39,10 +42,21 @@ const Vehicles = () => {
         </div>
       </>
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center gap-4 mt-8">
-        <VehicleCards />
-        <VehicleCards />
-        <VehicleCards />
-        <VehicleCards />
+        {isLoading && (
+          <div className="flex justify-center items-center">
+            <p className="text-2xl">Loading...</p>
+          </div>
+        )}
+
+        {isError && (
+          <div className="flex justify-center items-center">
+            <p className="text-2xl">Error...</p>
+          </div>
+        )}
+
+        {data?.vehicles?.map((data: any) => {
+          return <VehicleCards key={data.id} data={data} />;
+        })}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-"use client";
 import {
   Card,
   CardContent,
@@ -15,7 +14,13 @@ import TextWithIcon from "../ui/TextWithIcon";
 import { toast } from "react-hot-toast";
 import { Badge } from "../ui/badge";
 
-const VehicleCards = () => {
+interface VehicleCardsProps {
+  data: any;
+}
+
+const VehicleCards = ({ data }: VehicleCardsProps) => {
+  const { name, model, vehicle_type, price } = data;
+
   const [showOtherPhotos, setShowOtherPhotos] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
@@ -32,7 +37,7 @@ const VehicleCards = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          Porsche 718 Cayman S
+          {name}
           <Heart
             className={clsx("hover:text-red-500", {
               "text-red-500": isLiked,
@@ -42,21 +47,21 @@ const VehicleCards = () => {
           />
         </CardTitle>
         <CardDescription>
-          Coupe
-          <Badge variant={"green"} className="ml-2 ">
-            New
+          {model}
+          <Badge variant={"green"} className="ml-2 capitalize">
+            {vehicle_type}
           </Badge>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Image
-          src={showOtherPhotos ? "/assets/vehicle2.jpg" : "/assets/vehicle.jpg"}
+          src={data.Images[0].url}
           alt="Porsche 718 Cayman S"
           width={500}
-          height={300}
+          height={200}
           onMouseEnter={() => setShowOtherPhotos(true)}
           onMouseLeave={() => setShowOtherPhotos(false)}
-          className="rounded-lg transition-all duration-500 ease-in-out transform hover:scale-105"
+          className="rounded-lg transition-all duration-500 ease-in-out transform hover:scale-105 h-[200px] w-[500px] object-cover"
         />
       </CardContent>
       <CardFooter className="flex justify-between items-center">
@@ -66,7 +71,10 @@ const VehicleCards = () => {
         </div>
         <div>
           <span className="font-bold text-lg md:text-2xl lg:text-2xl cursor-pointer ml-2">
-            $199.000
+            <span className="text-green-600">$</span>{" "}
+            <span className="text-slate-900">
+              {price.toLocaleString().split(",")[0]}
+            </span>
           </span>
         </div>
       </CardFooter>
