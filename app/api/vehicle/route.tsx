@@ -75,11 +75,44 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const vehicles = await prisma.vehicles.findMany({
-    include: {
-      Images: true,
-    },
-  });
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
 
-  return NextResponse.json({ vehicles }, { status: 200 });
+  try {
+    if (id) {
+      const idNumber = parseInt(id);
+
+      const vehicleById = await prisma.vehicles.findUnique({
+        where: {
+          id: idNumber,
+        },
+        include: {
+          Images: true,
+        },
+      });
+
+      if (!vehicleById) {
+        return NextResponse.json(
+          { error: "Vehicle not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({ vehicleById }, { status: 200 });
+    } else {
+      const vehicles = await prisma.vehicles.findMany({
+        include: {
+          Images: true,
+        },
+      });
+
+      return NextResponse.json({ vehicles }, { status: 200 });
+    }
+  } catch (error) {
+    console.error("Error occurred:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 }
+    );
+  }
 }

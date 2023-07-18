@@ -13,6 +13,7 @@ import { useState } from "react";
 import TextWithIcon from "../ui/TextWithIcon";
 import { toast } from "react-hot-toast";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 
 interface VehicleCardsProps {
   data: any;
@@ -54,15 +55,17 @@ const VehicleCards = ({ data }: VehicleCardsProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Image
-          src={data.Images[0].url}
-          alt="Porsche 718 Cayman S"
-          width={500}
-          height={200}
-          onMouseEnter={() => setShowOtherPhotos(true)}
-          onMouseLeave={() => setShowOtherPhotos(false)}
-          className="rounded-lg transition-all duration-500 ease-in-out transform hover:scale-105 h-[200px] w-[500px] object-cover"
-        />
+        <Link href={`/dashboard/vehicles/${data.id}`}>
+          <Image
+            src={data.Images[0].url}
+            alt="Porsche 718 Cayman S"
+            width={500}
+            height={200}
+            onMouseEnter={() => setShowOtherPhotos(true)}
+            onMouseLeave={() => setShowOtherPhotos(false)}
+            className="rounded-lg transition-all duration-500 ease-in-out transform hover:scale-105 h-[200px] w-[500px] object-cover"
+          />
+        </Link>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="flex space-x-2">
