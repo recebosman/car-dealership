@@ -4,15 +4,16 @@ import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import SearchInput from "@/components/ui/SearchInput";
 import { Button } from "@/components/ui/button";
 import { ComboboxDemo } from "@/components/ui/comboBox";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import VehicleCards from "@/components/vehicles/VehicleCards";
 import { vehicles_brand } from "@/constants";
 import { vehicles_type } from "@/constants";
+import useSearchStore from "@/store/useSearchStore";
 import { SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Vehicles = () => {
+  const { isDataNotFound } = useSearchStore();
   const { data, isError, isLoading } = GetVehicles();
 
   const [isClient, setIsClient] = useState(false);
@@ -92,9 +93,13 @@ const Vehicles = () => {
             </div>
           )}
 
-          {data?.vehicles?.map((data: any) => {
-            return <VehicleCards key={data.id} data={data} />;
-          })}
+          {isDataNotFound ? (
+            <p className="text-2xl">Data not found</p>
+          ) : (
+            data?.vehicles?.map((data: any) => (
+              <VehicleCards key={data.id} data={data} />
+            ))
+          )}
         </div>
       </div>
     )

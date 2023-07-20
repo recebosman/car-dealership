@@ -77,6 +77,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
+  const vehicleByName = searchParams.get("name");
 
   try {
     if (id) {
@@ -99,6 +100,19 @@ export async function GET(req: Request) {
       }
 
       return NextResponse.json({ vehicleById }, { status: 200 });
+    } else if (vehicleByName) {
+      const vehicles = await prisma.vehicles.findMany({
+        where: {
+          name: {
+            contains: vehicleByName,
+          },
+        },
+        include: {
+          Images: true,
+        },
+      });
+
+      return NextResponse.json({ vehicles }, { status: 200 });
     } else {
       const vehicles = await prisma.vehicles.findMany({
         include: {
