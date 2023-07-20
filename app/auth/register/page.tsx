@@ -64,7 +64,7 @@ export default function Register() {
         )
         .then((res) => {
           if (res.status === 200) {
-            toast.success("Vehicle added successfully");
+            toast.success("Account created successfully");
             signIn("credentials", {
               email,
               password,

@@ -30,6 +30,41 @@ const Page = () => {
     [mutate]
   );
 
+  const SkeletonRepeat = ({ count }: { count: number }) => {
+    const skeletonElements = [];
+
+    for (let i = 0; i < count; i++) {
+      skeletonElements.push(
+        <div
+          key={i}
+          className="flex flex-col rounded-lg border bg-card max-w-sm w-full"
+        >
+          <div className="flex justify-between p-4 w-full">
+            <div>
+              <Skeleton className="h-16 w-16 rounded-full" />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>
+          <div className="flex flex-col space-y-2 p-4">
+            <div className="flex justify-between space-x-2">
+              <Skeleton className="h-16 w-full rounded-b-lg" />
+              <Skeleton className="h-16 w-full rounded-b-lg" />
+            </div>
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-4 w-[150px]" />
+              <Skeleton className="h-4 w-[30px]" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return skeletonElements;
+  };
+
   const storeCards = useMemo(() => {
     if (data && data.store) {
       return data.store.map((store: store) => (
@@ -53,22 +88,12 @@ const Page = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full place-content-start ">
           {isLoading ? (
             <>
-              {Array(3).map((_, i) => (
-                <Skeleton key={i} />
-              ))}
+              <SkeletonRepeat count={3} />
             </>
           ) : isError ? (
             <p className="text-red-500">Something went wrong</p>
           ) : (
-            data &&
-            data.store?.map((store: store) => (
-              <StoreCard
-                key={store.id}
-                storeName={store.name}
-                id={store.id}
-                handleDelete={handleDelete}
-              />
-            ))
+            storeCards
           )}
         </div>
       </div>

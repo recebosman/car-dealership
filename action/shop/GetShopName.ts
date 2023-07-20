@@ -4,7 +4,7 @@ import GetCurrentUser from "../auth/GetCurrentUser";
 
 export default function GetShopName() {
   const { user } = GetCurrentUser();
-  const user_email = user.session.user.email;
+  const user_email = user?.session?.user?.email;
   const {
     data = [],
     error,

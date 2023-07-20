@@ -49,6 +49,7 @@ export function CreateStoreCard() {
   const { user } = GetCurrentUser();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isCreating, setIsCreating] = React.useState(false);
+
   const warnings = [
     {
       title: "Store Name can be changed later!",
