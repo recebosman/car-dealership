@@ -136,7 +136,6 @@ const AddVehicleModal = () => {
     try {
       const urls = await Promise.all(uploadPromises);
       uploadedImages(urls);
-      window.location.reload(); // Sayfanın yenilenmesi
     } catch (error) {
       console.log(error);
     }
