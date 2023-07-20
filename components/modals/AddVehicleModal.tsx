@@ -87,7 +87,7 @@ const vehicleFormSchema = z.object({
     }),
 });
 
-const fileTypes = ["JPG","JPEG" "PNG"];
+const fileTypes = ["JPG","JPEG", "PNG"];
 
 const AddVehicleModal = () => {
   const [loading, setLoading] = useState(false);
