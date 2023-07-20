@@ -18,7 +18,7 @@ export default function GetVehicles() {
               return res.json();
             })
             .then((jsonData) => {
-              if (jsonData?.length === 0) {
+              if (jsonData?.vehicles?.length === 0) {
                 useSearchStore.setState({ isDataNotFound: true });
               } else {
                 useSearchStore.setState({ isDataNotFound: false });
@@ -30,9 +30,14 @@ export default function GetVehicles() {
               console.error("Error fetching data:", error);
               resolve([]);
             });
-        }, 1000);
+        }, 500);
       })
   );
+
+  // Check if data exists and is empty, then set isDataNotFound to false
+  if (data && data.length === 0) {
+    useSearchStore.setState({ isDataNotFound: false });
+  }
 
   return {
     data: data || ([] as any),

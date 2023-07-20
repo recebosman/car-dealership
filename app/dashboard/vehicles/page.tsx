@@ -9,7 +9,7 @@ import VehicleCards from "@/components/vehicles/VehicleCards";
 import { vehicles_brand } from "@/constants";
 import { vehicles_type } from "@/constants";
 import useSearchStore from "@/store/useSearchStore";
-import { SlidersHorizontal } from "lucide-react";
+import { Car, CarIcon, Frown, SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Vehicles = () => {
@@ -94,7 +94,12 @@ const Vehicles = () => {
           )}
 
           {isDataNotFound ? (
-            <p className="text-2xl">Data not found</p>
+            <div className="col-span-12">
+              <Frown className="mx-auto" size={128} />
+              <p className="text-2xl text-center font-semibold text-gray-800">
+                Please try again with different keyword or add new vehicle.
+              </p>
+            </div>
           ) : (
             data?.vehicles?.map((data: any) => (
               <VehicleCards key={data.id} data={data} />
