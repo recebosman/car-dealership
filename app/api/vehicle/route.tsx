@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { Vehicles } from "@prisma/client";
+import { VehicleTypes, Vehicles } from "@prisma/client";
 
 export async function POST(req: Request) {
   if (!req || !req.json)
@@ -78,6 +78,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
   const vehicleByName = searchParams.get("name");
+  const vehicleByType = searchParams.get("vehicle_type");
 
   try {
     if (id) {
@@ -100,25 +101,58 @@ export async function GET(req: Request) {
       }
 
       return NextResponse.json({ vehicleById }, { status: 200 });
-    } else if (vehicleByName) {
-      const vehicles = await prisma.vehicles.findMany({
-        where: {
-          name: {
-            contains: vehicleByName,
-          },
-        },
-        include: {
-          Images: true,
-        },
-      });
-
-      return NextResponse.json({ vehicles }, { status: 200 });
     } else {
-      const vehicles = await prisma.vehicles.findMany({
-        include: {
-          Images: true,
-        },
-      });
+      let vehicles;
+
+      if (vehicleByName && vehicleByType) {
+        vehicles = await prisma.vehicles.findMany({
+          where: {
+            AND: [
+              {
+                name: {
+                  contains: vehicleByName,
+                },
+              },
+              {
+                vehicle_type: {
+                  equals: vehicleByType as VehicleTypes,
+                },
+              },
+            ],
+          },
+          include: {
+            Images: true,
+          },
+        });
+      } else if (vehicleByType) {
+        vehicles = await prisma.vehicles.findMany({
+          where: {
+            vehicle_type: {
+              equals: vehicleByType as VehicleTypes,
+            },
+          },
+          include: {
+            Images: true,
+          },
+        });
+      } else if (vehicleByName) {
+        vehicles = await prisma.vehicles.findMany({
+          where: {
+            name: {
+              contains: vehicleByName,
+            },
+          },
+          include: {
+            Images: true,
+          },
+        });
+      } else {
+        vehicles = await prisma.vehicles.findMany({
+          include: {
+            Images: true,
+          },
+        });
+      }
 
       return NextResponse.json({ vehicles }, { status: 200 });
     }

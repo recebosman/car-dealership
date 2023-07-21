@@ -49,9 +49,19 @@ const VehicleCards = ({ data }: VehicleCardsProps) => {
         </CardTitle>
         <CardDescription>
           {model}
-          <Badge variant={"green"} className="ml-2 capitalize">
-            {vehicle_type}
-          </Badge>
+          {vehicle_type === "new" ? (
+            <Badge variant={"green"} className="ml-2 capitalize">
+              {vehicle_type}
+            </Badge>
+          ) : vehicle_type === "used" ? (
+            <Badge variant={"yellow"} className="ml-2 capitalize">
+              {vehicle_type}
+            </Badge>
+          ) : (
+            <Badge variant={"brown"} className="ml-2 capitalize">
+              {vehicle_type}
+            </Badge>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>

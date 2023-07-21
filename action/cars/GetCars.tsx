@@ -1,12 +1,24 @@
+import useFilterStore from "@/store/useFilterStore";
 import useSearchStore from "@/store/useSearchStore";
 import { Vehicles } from "@prisma/client";
 import useSWR from "swr";
 
 export default function GetVehicles() {
   const { search } = useSearchStore();
+  const { vehicleType } = useFilterStore();
+
+  let endpoint = "/api/vehicle";
+
+  if (search && vehicleType) {
+    endpoint = `/api/vehicle?name=${search}&vehicle_type=${vehicleType}`;
+  } else if (search) {
+    endpoint = `/api/vehicle?name=${search}`;
+  } else if (vehicleType) {
+    endpoint = `/api/vehicle?vehicle_type=${vehicleType}`;
+  }
 
   const { data, error, isLoading, mutate } = useSWR<Vehicles[], unknown>(
-    `/api/vehicle?name=${search}`,
+    endpoint,
     (url) =>
       new Promise<Vehicles[]>((resolve) => {
         setTimeout(() => {
@@ -34,7 +46,6 @@ export default function GetVehicles() {
       })
   );
 
-  // Check if data exists and is empty, then set isDataNotFound to false
   if (data && data.length === 0) {
     useSearchStore.setState({ isDataNotFound: false });
   }

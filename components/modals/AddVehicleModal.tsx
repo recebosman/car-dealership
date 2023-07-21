@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FileUploader } from "react-drag-drop-files";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import ImageCompressor from "image-compressor.js";
 import { storage } from "@/firebase";
 import { v4 as uuidv4 } from "uuid";
+import browserImageCompression from "browser-image-compression";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
@@ -39,7 +39,7 @@ import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Plus, Store } from "lucide-react";
+import { Loader2, Plus, Store, X } from "lucide-react";
 
 import {
   fuel_type,
@@ -51,7 +51,6 @@ import {
 import GetShopName from "@/action/shop/GetShopName";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import Image from "next/image";
-import { X } from "lucide-react";
 
 const vehicleFormSchema = z.object({
   name: z.string().nonempty({
@@ -76,7 +75,6 @@ const vehicleFormSchema = z.object({
   kilometers: z.string().regex(/^\d+$/, {
     message: "Kilometers must be a positive number",
   }),
-
   price: z.string().regex(/^\d+$/, {
     message: "Price must be a positive number",
   }),
@@ -89,12 +87,12 @@ const vehicleFormSchema = z.object({
     }),
 });
 
-const fileTypes = ["JPG","JPEG", "PNG"];
+const fileTypes = ["JPG", "JPEG", "PNG"];
 
 const AddVehicleModal = () => {
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
   const [selectedPhotos, setSelectedPhotos] = useState<any[]>([]);
-  const [submitting, setSubmitting] = useState(false);
 
   const [selectedStoreId, setSelectedStoreId] = useState("");
   const { data, mutate } = GetShopName();
@@ -104,69 +102,48 @@ const AddVehicleModal = () => {
     resolver: zodResolver(vehicleFormSchema),
   });
 
-  const compressImages = async (photos: any) => {
-    const compressedPhotos = await Promise.all(
-      photos.map((photo: any) => {
-        return new Promise((resolve) => {
-          new ImageCompressor(photo, {
-            quality: 0.5,
-            maxWidth: 500,
-            maxHeight: 300,
-            success: (result) => {
-              resolve(result);
-            },
-            error: (error) => {
-              console.log("Image compression error:", error);
-              resolve(photo);
-            },
-          });
-        });
-      })
-    );
-
-    return compressedPhotos;
-  };
-
   const handleSelectStoreById = (storeId: string) => {
     setSelectedStoreId(storeId);
   };
 
-  const handleFileSelection = async (filesObject: any) => {
+  const handleFileSelection = (filesObject: string) => {
     const files = Object.values(filesObject);
+    setFile(files.map((file) => file) as any);
 
     if (selectedPhotos.length + files.length > 2) {
       toast.error("You can only upload up to 2 photos");
       return;
     }
 
-    try {
-      setLoading(true);
-      const compressedPhotos = await compressImages(files);
-      setSelectedPhotos((prevPhotos) => [...prevPhotos, ...compressedPhotos]);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error compressing images:", error);
-      setLoading(false);
-      toast.error("Error compressing images. Please try again.");
-    }
+    setSelectedPhotos((prevPhotos) => [...prevPhotos, ...files]);
   };
+
   const uploadImages = async (uploadedImages: any) => {
     if (selectedPhotos.length === 0) return;
 
-    const uploadPromises = selectedPhotos.map((photo) => {
-      const imageRef = ref(
-        storage,
-        `images/${user.session.user.email}/${data.store
-          ?.find((store: any) => store.id === selectedStoreId)
-          ?.name.toLowerCase()}/${uuidv4()}`
+    try {
+      const compressedImages = await Promise.all(
+        selectedPhotos.map((photo) =>
+          browserImageCompression(photo, {
+            maxSizeMB: 0.08,
+            maxWidthOrHeight: 1280,
+          })
+        )
       );
 
-      return uploadBytes(imageRef, photo).then((snapshot) => {
-        return getDownloadURL(snapshot.ref);
-      });
-    });
+      const uploadPromises = compressedImages.map((compressedPhoto) => {
+        const imageRef = ref(
+          storage,
+          `images/${user.session.user.email}/${data.store
+            ?.find((store: any) => store.id === selectedStoreId)
+            ?.name.toLowerCase()}/${uuidv4()}`
+        );
 
-    try {
+        return uploadBytes(imageRef, compressedPhoto).then((snapshot) => {
+          return getDownloadURL(snapshot.ref);
+        });
+      });
+
       const urls = await Promise.all(uploadPromises);
       uploadedImages(urls);
     } catch (error) {
@@ -179,14 +156,6 @@ const AddVehicleModal = () => {
   async function onSubmit(values: z.infer<typeof vehicleFormSchema>) {
     try {
       const formValues = form.getValues();
-
-      setSubmitting(true);
-
-      if (selectedPhotos.length === 0) {
-        toast.error("Please upload at least one photo");
-        setSubmitting(false);
-        return;
-      }
 
       const combinedValues = {
         ...formValues,
@@ -214,6 +183,8 @@ const AddVehicleModal = () => {
           .then((res) => {
             if (res.status === 200) {
               toast.success("Vehicle added successfully");
+              mutate();
+              form.reset();
               setLoading(false);
             }
           })
@@ -223,7 +194,9 @@ const AddVehicleModal = () => {
       };
 
       await uploadImages(uploadedImages);
-      setSubmitting(false);
+      setInterval(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.log(error);
     }
@@ -417,8 +390,8 @@ const AddVehicleModal = () => {
             </div>
 
             <div className="col-span-2 flex justify-end mt-4">
-              <Button disabled={submitting} type="submit" size={"full"}>
-                {submitting ? (
+              <Button disabled={loading} type="submit" size={"full"}>
+                {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Please wait

@@ -23,11 +23,29 @@ type ComboboxProps = {
     label: string;
   }[];
   command: string;
+  setVehicleType?: (value: string) => void;
 };
 
-export function ComboboxDemo({ data, command }: ComboboxProps) {
+export function ComboboxDemo({ data, command, setVehicleType }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+
+  React.useEffect(() => {
+    if (value) {
+      setVehicleType?.(value);
+    }
+  }, [value, setVehicleType]);
+
+  const handleSelectItem = (currentValue: any) => {
+    if (currentValue === "all") {
+      setValue("");
+      setVehicleType?.("");
+    } else {
+      setValue(currentValue);
+      setVehicleType?.(currentValue);
+    }
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -50,13 +68,20 @@ export function ComboboxDemo({ data, command }: ComboboxProps) {
           </CommandEmpty>
 
           <CommandGroup>
+            <CommandItem key="all" onSelect={() => handleSelectItem("all")}>
+              <Check
+                className={cn(
+                  "mr-2 h-4 w-4",
+                  value === "" ? "opacity-100" : "opacity-0"
+                )}
+              />
+              All Vehicles
+            </CommandItem>
+
             {data?.map((item) => (
               <CommandItem
                 key={item.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
+                onSelect={() => handleSelectItem(item.value)}
               >
                 <Check
                   className={cn(
