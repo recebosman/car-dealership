@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FileUploader } from "react-drag-drop-files";
@@ -102,9 +102,9 @@ const AddVehicleModal = () => {
     resolver: zodResolver(vehicleFormSchema),
   });
 
-  const handleSelectStoreById = (storeId: string) => {
+  const handleSelectStoreById = useCallback((storeId: string) => {
     setSelectedStoreId(storeId);
-  };
+  }, []);
 
   const handleFileSelection = (filesObject: string) => {
     const files = Object.values(filesObject);
