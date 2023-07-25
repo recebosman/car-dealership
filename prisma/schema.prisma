@@ -22,8 +22,9 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  Store    Store[]
-  vehicles Vehicles[]
+  Store        Store[]
+  vehicles     Vehicles[]
+  fav_vehicles Fav_Vehicles[]
 }
 
 model Store {
@@ -37,6 +38,19 @@ model Store {
   vehicles Vehicles[]
 
   @@index([UserId], name: "UserId")
+}
+
+model Fav_Vehicles {
+  id        Int      @id @default(autoincrement())
+  UserId    Int
+  user      User     @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  VehicleId Int
+  vehicle   Vehicles @relation(fields: [VehicleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([UserId], name: "UserId")
+  @@index([VehicleId], name: "VehicleId")
 }
 
 enum VehicleTypes {
@@ -53,7 +67,7 @@ enum FuelTypes {
 }
 
 model Vehicles {
-  id            Int          @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name          String
   model         String
   vehicle_class String
@@ -62,13 +76,14 @@ model Vehicles {
   kilometers    Int
   price         Int
   fuel_type     FuelTypes
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   UserId        Int
-  user          User         @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [UserId], references: [id], onDelete: Cascade)
   StoreId       Int
-  store         Store        @relation(fields: [StoreId], references: [id], onDelete: Cascade)
+  store         Store          @relation(fields: [StoreId], references: [id], onDelete: Cascade)
   Images        Images[]
+  fav_vehicles  Fav_Vehicles[]
 
   @@index([UserId], name: "UserId")
   @@index([StoreId], name: "StoreId")

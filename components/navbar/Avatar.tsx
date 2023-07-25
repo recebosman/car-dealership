@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, TimerIcon, User } from "lucide-react";
+import { Heart, LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import { useRouter } from "next/navigation";
@@ -60,6 +60,12 @@ const AvatarNav = () => {
             <User size={16} />
           </span>
           Profile
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem className="flex gap-x-2">
+          <span>
+            <Heart size={16} />
+          </span>
+          Favorites
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           onClick={handleLogout}

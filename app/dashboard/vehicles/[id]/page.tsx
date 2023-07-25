@@ -37,19 +37,14 @@ const Vehicle = ({ params }: any) => {
             </div>
             <div className="lg:sticky lg:top-0">
               <div className="space-y-4 lg:pt-4">
-                {/* Skeleton for seller info */}
                 <Skeleton className="h-8 w-1/2" />
                 <Skeleton className="h-4 w-1/4" />
                 <Skeleton className="h-4 w-1/4" />
-                {/* Skeleton for vehicle year */}
-                <Skeleton className="h-8 w-1/4" />
-                {/* Skeleton for other informations */}
                 <Skeleton className="h-8 w-1/4" />
                 <Skeleton className="h-8 w-1/4" />
                 <Skeleton className="h-8 w-1/4" />
-                {/* Skeleton for price */}
                 <Skeleton className="h-8 w-1/4" />
-                {/* Skeleton for buttons */}
+                <Skeleton className="h-8 w-1/4" />
                 <Skeleton className="h-12 w-full rounded" />
                 <Skeleton className="h-12 w-full rounded" />
               </div>
