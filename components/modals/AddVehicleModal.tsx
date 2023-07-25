@@ -125,8 +125,8 @@ const AddVehicleModal = () => {
       const compressedImages = await Promise.all(
         selectedPhotos.map((photo) =>
           browserImageCompression(photo, {
-            maxSizeMB: 0.06,
-            maxWidthOrHeight: 600,
+            maxSizeMB: 0.08,
+            maxWidthOrHeight: 1280,
           })
         )
       );

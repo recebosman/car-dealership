@@ -90,6 +90,26 @@ export async function GET(req: Request) {
         },
         include: {
           Images: true,
+          store: {
+            select: {
+              name: true,
+              vehicles: {
+                select: {
+                  id: true,
+                  Images: true,
+                  name: true,
+                  price: true,
+                  model: true,
+                  vehicle_type: true,
+                },
+              },
+            },
+          },
+          user: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
 

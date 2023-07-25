@@ -4,7 +4,11 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["localhost", "firebasestorage.googleapis.com"],
+    domains: [
+      "localhost",
+      "firebasestorage.googleapis.com",
+      "images.unsplash.com",
+    ],
   },
 };
 
