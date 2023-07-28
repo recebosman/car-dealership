@@ -1,4 +1,5 @@
 "use client";
+import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import GetVehicles from "@/action/cars/GetCars";
 import AddVehicleModal from "@/components/modals/AddVehicleModal";
 import SearchInput from "@/components/ui/SearchInput";

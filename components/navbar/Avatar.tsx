@@ -14,6 +14,7 @@ import { Heart, LogOut, TimerIcon, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import GetCurrentUser from "@/action/auth/GetCurrentUser";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const AvatarNav = () => {
   const router = useRouter();
@@ -61,12 +62,14 @@ const AvatarNav = () => {
           </span>
           Profile
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className="flex gap-x-2">
-          <span>
-            <Heart size={16} />
-          </span>
-          Favorites
-        </DropdownMenuCheckboxItem>
+        <Link href="/dashboard/favorites">
+          <DropdownMenuCheckboxItem className="flex gap-x-2">
+            <span>
+              <Heart size={16} />
+            </span>
+            Favorites
+          </DropdownMenuCheckboxItem>
+        </Link>
         <DropdownMenuCheckboxItem
           onClick={handleLogout}
           className="flex gap-x-2"

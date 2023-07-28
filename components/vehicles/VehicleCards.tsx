@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -14,23 +15,43 @@ import TextWithIcon from "../ui/TextWithIcon";
 import { toast } from "react-hot-toast";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
+import axios from "axios";
+import GetCurrentUser from "@/action/auth/GetCurrentUser";
+import { useSession } from "next-auth/react";
 
 interface VehicleCardsProps {
   data: any;
 }
 
 const VehicleCards = ({ data }: VehicleCardsProps) => {
-  const { name, model, vehicle_type, price } = data;
+  const { id, name, model, vehicle_type, price } = data;
+  const { user } = GetCurrentUser();
 
   const [showOtherPhotos, setShowOtherPhotos] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleLike = (data: any) => {
-    setIsLiked((prev) => !prev);
-    {
-      isLiked
-        ? toast.error("Porsche 718 Cayman S removed from your favorites")
-        : toast.success("Porsche 718 Cayman S added to your favorites");
+  const handleLike = (id: number) => {
+    try {
+      const res = axios
+        .post(`/api/fav`, {
+          VehicleId: id,
+          UserEmail: user?.session?.user?.email,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLiked(true);
+            toast.success("Vehicle added to favorites");
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 400) {
+            toast.error(err.response.data.error);
+          }
+        });
+
+      return res;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -44,7 +65,9 @@ const VehicleCards = ({ data }: VehicleCardsProps) => {
               "text-red-500": isLiked,
             })}
             size={20}
-            onClick={handleLike}
+            onClick={() => {
+              handleLike(id);
+            }}
           />
         </CardTitle>
         <CardDescription>
