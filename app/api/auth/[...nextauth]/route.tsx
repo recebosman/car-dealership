@@ -43,16 +43,19 @@ export const handler: AuthOptions = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = user.role;
-      return token;
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return { ...token, ...session.user };
+      }
+      return { ...token, ...user };
     },
 
     async session({ session, token }) {
-      if (session?.user) session.user.role = token.role;
+      session.user = token as any;
       return session;
     },
   },
+
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",

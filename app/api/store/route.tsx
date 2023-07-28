@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -9,6 +10,7 @@ export async function POST(req: Request) {
     );
 
   const body = await req.json();
+
   const { name, user_email } = body;
 
   if (!name || !user_email) {
