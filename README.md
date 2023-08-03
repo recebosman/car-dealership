@@ -38,4 +38,4 @@ Deployment:
 
 Link: 🔗 https://car-dealership-five.vercel.app
 
-Note: 📝"In the development phase, it is possible to create a store, set up filtering, and upload products."
+Note: 📝"In the development phase, it is possible to create a store, set up filtering, view store, see your fav and upload products."
