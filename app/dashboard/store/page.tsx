@@ -66,11 +66,12 @@ const Page = () => {
   };
 
   const storeCards = useMemo(() => {
-    if (data && data.store) {
-      return data.store.map((store: store) => (
+    if (data && data.combinedStore) {
+      return data.combinedStore.map((store: store) => (
         <StoreCard
           key={store.id}
           storeName={store.name}
+          vehicleCount={store.vehicleCount ? store.vehicleCount : 0}
           id={store.id}
           handleDelete={handleDelete}
         />

@@ -41,4 +41,5 @@ type register = {
 type store = {
   id: number;
   name: string;
+  vehicleCount?: number | null;
 };

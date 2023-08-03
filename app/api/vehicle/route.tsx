@@ -184,3 +184,28 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 400 }
+    );
+  }
+
+  const vehicles = await prisma.vehicles.delete({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  return NextResponse.json(
+    {
+      message: "Vehicle deleted successfully",
+    },
+    { status: 200 }
+  );
+}

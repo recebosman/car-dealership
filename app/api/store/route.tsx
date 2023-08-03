@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -74,26 +73,69 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const email = searchParams.get("email");
+  const id = searchParams.get("id");
 
-  if (!email) {
-    return NextResponse.json(
-      { error: "All fields are required" },
-      { status: 400 }
-    );
+  if (id) {
+    const vehicles = await prisma.vehicles.findMany({
+      where: {
+        store: {
+          id: Number(id),
+        },
+      },
+      select: {
+        id: true,
+        model: true,
+        name: true,
+        year: true,
+        vehicle_type: true,
+        fuel_type: true,
+        price: true,
+        kilometers: true,
+        Images: {
+          select: {
+            url: true,
+            VehicleId: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({ vehicles }, { status: 200 });
   }
 
-  const store = await prisma.store.findMany({
-    where: {
-      user: {
-        email,
+  if (email) {
+    const store = await prisma.store.findMany({
+      where: {
+        user: {
+          email,
+        },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
 
-  return NextResponse.json({ store }, { status: 200 });
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const storeVehicleCount = await prisma.vehicles.aggregate({
+      _count: {
+        id: true,
+      },
+    });
+
+    const combinedStore = store.map((store) => {
+      return {
+        ...store,
+        vehicleCount: storeVehicleCount._count.id,
+      };
+    });
+
+    return NextResponse.json({ combinedStore }, { status: 200 });
+  }
+
+  return NextResponse.json(
+    { error: "Both email and id fields are required" },
+    { status: 400 }
+  );
 }
 
 export async function DELETE(req: Request) {

@@ -19,14 +19,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Store } from "lucide-react";
+import Link from "next/link";
 
 type StoreCardProps = {
   storeName: string;
   id: number;
+  vehicleCount: number;
   handleDelete: (id: number) => void;
 };
 
-export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
+export function StoreCard({
+  storeName,
+  id,
+  handleDelete,
+  vehicleCount,
+}: StoreCardProps) {
   return (
     <Card className="max-w-sm h-fit">
       <CardHeader>
@@ -59,16 +66,20 @@ export function StoreCard({ storeName, id, handleDelete }: StoreCardProps) {
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <span className="text-lg text-gray-500">Total Vehicles</span>
-            <span className="text-2xl font-bold">5</span>
+            <span className="text-2xl font-bold">{vehicleCount}</span>
           </span>
           <span className="flex items-center gap-2">
             <span className="text-lg text-gray-500">Total Orders</span>
-            <span className="text-2xl font-bold">5</span>
+            <span className="text-2xl font-bold">
+              {Math.floor(Math.random() * 100)}
+            </span>
           </span>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button variant="default">View Store</Button>
+        <Link href={`/dashboard/store/${id}`}>
+          <Button variant="default">View Store</Button>
+        </Link>
       </CardFooter>
     </Card>
   );
